@@ -1,6 +1,7 @@
 use std::{
     borrow::Cow,
     collections::{HashMap, HashSet},
+    future::IntoFuture,
 };
 
 use anyhow::Result;
@@ -670,7 +671,8 @@ async fn get_reduced_graphs_for_endpoint_inner_operation(
     let (is_single_page, graphs) = match &*project.next_mode().await? {
         NextMode::Development => (
             true,
-            async move { get_module_graph_for_endpoint(*entry).await }
+            get_module_graph_for_endpoint(*entry)
+                .into_future()
                 .instrument(tracing::info_span!("module graph for endpoint"))
                 .await?
                 .iter()
@@ -680,17 +682,15 @@ async fn get_reduced_graphs_for_endpoint_inner_operation(
         NextMode::Build => (
             false,
             vec![
-                *async move {
-                    get_module_graph_for_project(*project)
-                        // This is a performance optimization. This function is a root aggregation
-                        // function that aggregates over the whole subgraph.
-                        .resolve_strongly_consistent()
-                        .await?
-                        .to_resolved()
-                        .await
-                }
-                .instrument(tracing::info_span!("module graph for app"))
-                .await?,
+                *get_module_graph_for_project(*project)
+                    // This is a performance optimization. This function is a root aggregation
+                    // function that aggregates over the whole subgraph.
+                    .resolve_strongly_consistent()
+                    .into_future()
+                    .instrument(tracing::info_span!("module graph for app"))
+                    .await?
+                    .to_resolved()
+                    .await?,
             ],
         ),
     };
