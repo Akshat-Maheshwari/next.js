@@ -292,6 +292,16 @@ impl ChunkingContext for NodeJsChunkingContext {
     }
 
     #[turbo_tasks::function]
+    fn chunk_group(
+        self: Vc<Self>,
+        ident: Vc<AssetIdent>,
+        module: ResolvedVc<Box<dyn ChunkableModule>>,
+        availability_info: Value<AvailabilityInfo>,
+    ) -> Vc<ChunkGroupResult> {
+        self.chunk_group_multiple(ident, Vc::cell(vec![module]), availability_info)
+    }
+
+    #[turbo_tasks::function]
     async fn chunk_group_multiple(
         self: ResolvedVc<Self>,
         ident: Vc<AssetIdent>,
