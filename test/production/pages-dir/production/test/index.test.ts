@@ -580,14 +580,17 @@ describe('Production Usage', () => {
 
       const resources: Set<string> = new Set()
 
-      console.log(reactLoadableManifest)
-      expect(Object.keys(reactLoadableManifest).length).toBe(1)
-      const manifestKey = Object.keys(reactLoadableManifest)[0]
-      expect(manifestKey).toBeString()
-      if (!process.env.TURBOPACK) {
-        // the key is a non-deterministic number for Turbopack prod
-        expect(manifestKey).toEndWith(
-          'dynamic/css.js -> ../../components/dynamic-css/with-css'
+      let manifestKey: string
+      if (process.env.TURBOPACK) {
+        // the key is a non-deterministic number for Turbopack prod, but each page has its own manifest
+        expect(Object.keys(reactLoadableManifest).length).toBe(1)
+        manifestKey = Object.keys(reactLoadableManifest)[0]
+        expect(manifestKey).toBeString()
+      } else {
+        manifestKey = Object.keys(reactLoadableManifest).find((item) =>
+          item
+            .replace(/\\/g, '/')
+            .endsWith('dynamic/css.js -> ../../components/dynamic-css/with-css')
         )
       }
 
