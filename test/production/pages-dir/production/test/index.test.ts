@@ -580,16 +580,16 @@ describe('Production Usage', () => {
 
       const resources: Set<string> = new Set()
 
-      const manifestKey = Object.keys(reactLoadableManifest).find((item) => {
-        return item
-          .replace(/\\/g, '/')
-          .endsWith(
-            process.env.TURBOPACK
-              ? 'components/dynamic-css/with-css.js [client] (ecmascript, next/dynamic entry)'
-              : 'dynamic/css.js -> ../../components/dynamic-css/with-css'
-          )
-      })
+      console.log(reactLoadableManifest)
+      expect(Object.keys(reactLoadableManifest).length).toBe(1)
+      const manifestKey = Object.keys(reactLoadableManifest)[0]
       expect(manifestKey).toBeString()
+      if (!process.env.TURBOPACK) {
+        // the key is a non-deterministic number for Turbopack prod
+        expect(manifestKey).toEndWith(
+          'dynamic/css.js -> ../../components/dynamic-css/with-css'
+        )
+      }
 
       // test dynamic chunk
       reactLoadableManifest[manifestKey].files.forEach((f) => {
