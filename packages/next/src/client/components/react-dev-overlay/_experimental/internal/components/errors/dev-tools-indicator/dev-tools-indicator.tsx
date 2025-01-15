@@ -121,6 +121,7 @@ const DevToolsPopover = ({
 
   return (
     <Toast
+      data-nextjs-toast
       style={{
         boxShadow: 'none',
         zIndex: 2147483647,

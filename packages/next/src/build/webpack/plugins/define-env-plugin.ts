@@ -290,7 +290,9 @@ export function getDefineEnv({
         }
       : undefined),
     'process.env.__NEXT_EXPERIMENTAL_NEW_DEV_OVERLAY':
-      config.experimental.newDevOverlay ?? false,
+      config.experimental.newDevOverlay ||
+      // Enable the new dev overlay when PPR is enabled for testing.
+      process.env.__NEXT_EXPERIMENTAL_PPR === 'true',
   }
 
   const userDefines = config.compiler?.define ?? {}

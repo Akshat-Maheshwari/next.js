@@ -42,7 +42,8 @@ const isOwnerStackEnabled =
         `)
       } else {
         expect(stackFramesContent).toMatchInlineSnapshot(`
-         "at Inner (app/browser/page.js (11:11))
+         "at BrowserOnly (app/browser/browser-only.js (8:8))
+         at Inner (app/browser/page.js (11:11))
          at Page (app/browser/page.js (15:11))"
         `)
         expect(source).toMatchInlineSnapshot(`
@@ -82,9 +83,10 @@ const isOwnerStackEnabled =
             8 | export default function Page() {"
         `)
       } else {
-        expect(stackFramesContent).toMatchInlineSnapshot(
-          `"at Page (app/rsc/page.js (11:8))"`
-        )
+        expect(stackFramesContent).toMatchInlineSnapshot(`
+         "at Inner (app/rsc/page.js (5:11))
+         at Page (app/rsc/page.js (11:8))"
+        `)
         expect(source).toMatchInlineSnapshot(`
          "app/rsc/page.js (5:11) @ Inner
 
@@ -122,9 +124,10 @@ const isOwnerStackEnabled =
             10 | export default function Page() {"
         `)
       } else {
-        expect(stackFramesContent).toMatchInlineSnapshot(
-          `"at Page (app/ssr/page.js (13:8))"`
-        )
+        expect(stackFramesContent).toMatchInlineSnapshot(`
+         "at Inner (app/ssr/page.js (7:11))
+         at Page (app/ssr/page.js (13:8))"
+        `)
         expect(source).toMatchInlineSnapshot(`
          "app/ssr/page.js (7:11) @ Inner
 
