@@ -26,8 +26,9 @@ const isOwnerStackEnabled =
       const stackFramesContent = await getStackFramesContent(browser)
       if (process.env.TURBOPACK) {
         expect(stackFramesContent).toMatchInlineSnapshot(`
-          "at Inner (app/browser/page.js (11:10))
-          at Page (app/browser/page.js (15:10))"
+         "at BrowserOnly (app/browser/browser-only.js (8:7))
+         at Inner (app/browser/page.js (11:10))
+         at Page (app/browser/page.js (15:10))"
         `)
         expect(source).toMatchInlineSnapshot(`
           "app/browser/browser-only.js (8:7) @ BrowserOnly
@@ -68,9 +69,10 @@ const isOwnerStackEnabled =
       const source = await getRedboxSource(browser)
 
       if (process.env.TURBOPACK) {
-        expect(stackFramesContent).toMatchInlineSnapshot(
-          `"at Page (app/rsc/page.js (11:8))"`
-        )
+        expect(stackFramesContent).toMatchInlineSnapshot(`
+         "at Inner (app/rsc/page.js (5:11))
+         at Page (app/rsc/page.js (11:8))"
+        `)
         expect(source).toMatchInlineSnapshot(`
           "app/rsc/page.js (5:11) @ Inner
 
@@ -109,9 +111,10 @@ const isOwnerStackEnabled =
       const stackFramesContent = await getStackFramesContent(browser)
       const source = await getRedboxSource(browser)
       if (process.env.TURBOPACK) {
-        expect(stackFramesContent).toMatchInlineSnapshot(
-          `"at Page (app/ssr/page.js (13:7))"`
-        )
+        expect(stackFramesContent).toMatchInlineSnapshot(`
+         "at Inner (app/ssr/page.js (7:10))
+         at Page (app/ssr/page.js (13:7))"
+        `)
         expect(source).toMatchInlineSnapshot(`
           "app/ssr/page.js (7:10) @ Inner
 
