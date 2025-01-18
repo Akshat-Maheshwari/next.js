@@ -115,6 +115,9 @@ const DevToolsPopover = ({
   }, [])
 
   const togglePopover = () => setIsPopoverOpen((prev) => !prev)
+  const openIssues = () => {
+    issueCount > 0 && setIsErrorOverlayOpen(true)
+  }
 
   return (
     <Toast
@@ -126,10 +129,11 @@ const DevToolsPopover = ({
       <div ref={buttonRef}>
         <NextLogo
           issueCount={issueCount}
-          onClick={() => {
-            issueCount > 0 && setIsErrorOverlayOpen(true)
+          onClickLogo={() => {
+            openIssues()
             togglePopover()
           }}
+          openIssues={openIssues}
           isDevBuilding={useIsDevBuilding()}
           isDevRendering={useIsDevRendering()}
           aria-haspopup="true"

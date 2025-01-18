@@ -3,7 +3,8 @@ import { noop as css } from '../../../../../../internal/helpers/noop-template'
 
 interface Props extends React.ComponentProps<'button'> {
   issueCount: number
-  onClick: () => void
+  onClickLogo: () => void
+  openIssues: () => void
   isDevBuilding: boolean
   isDevRendering: boolean
 }
@@ -12,7 +13,8 @@ const SIZE = 36
 
 export const NextLogo = ({
   issueCount,
-  onClick,
+  onClickLogo,
+  openIssues,
   isDevBuilding,
   isDevRendering,
   ...props
@@ -220,12 +222,16 @@ export const NextLogo = ({
       >
         <div ref={ref}>
           {/* Children */}
-          <button data-next-mark onClick={onClick} {...props}>
+          <button data-next-mark onClick={onClickLogo} {...props}>
             <NextMark isLoading={isLoading} />
           </button>
           {hasError && (
             <div data-issues>
-              <button data-issues-open aria-label="Open issues overlay">
+              <button
+                data-issues-open
+                aria-label="Open issues overlay"
+                onClick={openIssues}
+              >
                 {issueCount} {issueCount === 1 ? 'Issue' : 'Issues'}
               </button>
               <button data-issues-close aria-label="Clear issues">
