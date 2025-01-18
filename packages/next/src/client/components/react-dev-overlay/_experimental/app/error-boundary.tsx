@@ -10,7 +10,7 @@ type ReactDevOverlayState = {
   isReactError: boolean
 }
 
-export class ErrorBoundary extends PureComponent<
+export class DevToolsErrorBoundary extends PureComponent<
   ReactDevOverlayProps,
   ReactDevOverlayState
 > {

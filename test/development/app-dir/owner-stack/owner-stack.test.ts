@@ -83,7 +83,7 @@ describe('app-dir - owner-stack', () => {
         at renderRootSync 
         at performWorkOnRoot 
         at performWorkOnRootViaSchedulerTask 
-        at MessagePort.performWorkUntilDeadline  The above error occurred in the <Page> component. It was handled by the <ReactDevOverlay> error boundary."
+        at MessagePort.performWorkUntilDeadline  The above error occurred in the <Page> component. It was handled by the <DevToolsErrorBoundary> error boundary."
       `)
     } else {
       expect(normalizeStackTrace(errorLog)).toMatchInlineSnapshot(`
@@ -102,7 +102,7 @@ describe('app-dir - owner-stack', () => {
         at renderRootSync 
         at performWorkOnRoot 
         at performWorkOnRootViaSchedulerTask 
-        at MessagePort.performWorkUntilDeadline  The above error occurred in the <Page> component. It was handled by the <ReactDevOverlay> error boundary."
+        at MessagePort.performWorkUntilDeadline  The above error occurred in the <Page> component. It was handled by the <DevToolsErrorBoundary> error boundary."
       `)
     }
   })
@@ -154,7 +154,7 @@ describe('app-dir - owner-stack', () => {
       at renderRootSync 
       at performWorkOnRoot 
       at performWorkOnRootViaSchedulerTask 
-      at MessagePort.performWorkUntilDeadline  The above error occurred in the <Thrower> component. It was handled by the <MyErrorBoundary> error boundary."
+      at MessagePort.performWorkUntilDeadline  The above error occurred in the <Thrower> component. It was handled by the <MyDevToolsErrorBoundary> error boundary."
     `)
   })
 
@@ -191,7 +191,7 @@ describe('app-dir - owner-stack', () => {
       at renderRootSync 
       at performWorkOnRoot 
       at performWorkOnRootViaSchedulerTask 
-      at MessagePort.performWorkUntilDeadline  The above error occurred in the <Page> component. It was handled by the <ReactDevOverlay> error boundary."
+      at MessagePort.performWorkUntilDeadline  The above error occurred in the <Page> component. It was handled by the <DevToolsErrorBoundary> error boundary."
     `)
   })
 

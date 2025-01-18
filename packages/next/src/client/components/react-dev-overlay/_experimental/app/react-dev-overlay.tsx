@@ -1,6 +1,6 @@
 import type { OverlayState } from '../../shared'
 import { useState } from 'react'
-import { ErrorBoundary } from './error-boundary'
+import { DevToolsErrorBoundary } from './error-boundary'
 import { ShadowPortal } from '../internal/components/shadow-portal'
 import { Base } from '../internal/styles/base'
 import { ComponentStyles } from '../internal/styles/component-styles'
@@ -21,7 +21,7 @@ export default function ReactDevOverlay({
   const { readyErrors } = useErrorHook({ errors: state.errors, isAppDir: true })
 
   return (
-    <ErrorBoundary onError={setIsErrorOverlayOpen}>
+    <DevToolsErrorBoundary onError={setIsErrorOverlayOpen}>
       {children}
 
       <ShadowPortal>
@@ -43,6 +43,6 @@ export default function ReactDevOverlay({
           setIsErrorOverlayOpen={setIsErrorOverlayOpen}
         />
       </ShadowPortal>
-    </ErrorBoundary>
+    </DevToolsErrorBoundary>
   )
 }
