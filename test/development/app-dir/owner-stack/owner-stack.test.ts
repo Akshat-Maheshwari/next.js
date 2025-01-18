@@ -68,22 +68,22 @@ describe('app-dir - owner-stack', () => {
 
     if (process.env.TURBOPACK) {
       expect(normalizeStackTrace(errorLog)).toMatchInlineSnapshot(`
-        "%o
-        %s Error: browser error
-        at useThrowError 
-        at useErrorHook 
-        at Page 
-        at react-stack-bottom-frame 
-        at renderWithHooks 
-        at updateFunctionComponent 
-        at beginWork 
-        at runWithFiberInDEV 
-        at performUnitOfWork 
-        at workLoopSync 
-        at renderRootSync 
-        at performWorkOnRoot 
-        at performWorkOnRootViaSchedulerTask 
-        at MessagePort.performWorkUntilDeadline  The above error occurred in the <Page> component. It was handled by the <DevToolsErrorBoundary> error boundary."
+       "%o
+       %s Error: browser error
+       at useThrowError 
+       at useErrorHook 
+       at Page 
+       at react-stack-bottom-frame 
+       at renderWithHooks 
+       at updateFunctionComponent 
+       at beginWork 
+       at runWithFiberInDEV 
+       at performUnitOfWork 
+       at workLoopSync 
+       at renderRootSync 
+       at performWorkOnRoot 
+       at performWorkOnRootViaSchedulerTask 
+       at MessagePort.performWorkUntilDeadline  The above error occurred in the <Page> component. It was handled by the <ReactDevOverlay> error boundary."
       `)
     } else {
       expect(normalizeStackTrace(errorLog)).toMatchInlineSnapshot(`
@@ -102,7 +102,7 @@ describe('app-dir - owner-stack', () => {
         at renderRootSync 
         at performWorkOnRoot 
         at performWorkOnRootViaSchedulerTask 
-        at MessagePort.performWorkUntilDeadline  The above error occurred in the <Page> component. It was handled by the <DevToolsErrorBoundary> error boundary."
+        at MessagePort.performWorkUntilDeadline  The above error occurred in the <Page> component. It was handled by the <ReactDevOverlay> error boundary."
       `)
     }
   })
@@ -176,22 +176,22 @@ describe('app-dir - owner-stack', () => {
     }).message
 
     expect(normalizeStackTrace(errorLog)).toMatchInlineSnapshot(`
-      "%o
-      %s Error: ssr error
-      at useThrowError 
-      at useErrorHook 
-      at Page 
-      at react-stack-bottom-frame 
-      at renderWithHooks 
-      at updateFunctionComponent 
-      at beginWork 
-      at runWithFiberInDEV 
-      at performUnitOfWork 
-      at workLoopSync 
-      at renderRootSync 
-      at performWorkOnRoot 
-      at performWorkOnRootViaSchedulerTask 
-      at MessagePort.performWorkUntilDeadline  The above error occurred in the <Page> component. It was handled by the <DevToolsErrorBoundary> error boundary."
+     "%o
+     %s Error: ssr error
+     at useThrowError 
+     at useErrorHook 
+     at Page 
+     at react-stack-bottom-frame 
+     at renderWithHooks 
+     at updateFunctionComponent 
+     at beginWork 
+     at runWithFiberInDEV 
+     at performUnitOfWork 
+     at workLoopSync 
+     at renderRootSync 
+     at performWorkOnRoot 
+     at performWorkOnRootViaSchedulerTask 
+     at MessagePort.performWorkUntilDeadline  The above error occurred in the <Page> component. It was handled by the <ReactDevOverlay> error boundary."
     `)
   })
 
