@@ -1,12 +1,13 @@
+use anyhow::Result;
 use serde::{Deserialize, Serialize};
 use turbo_rcstr::RcStr;
 use turbo_tasks::{
     debug::ValueDebugFormat, trace::TraceRawVcs, Completion, FxIndexMap, NonLocalValue,
     OperationVc, ResolvedVc, Vc,
 };
-use turbopack_core::{module::Modules, module_graph::ModuleGraph};
+use turbopack_core::{module::Modules, module_graph::ModuleGraph, output::OutputAssets};
 
-use crate::paths::ServerPath;
+use crate::{paths::ServerPath, project::Project};
 
 #[derive(
     TraceRawVcs,
@@ -45,7 +46,8 @@ pub enum Route {
 
 #[turbo_tasks::value_trait(local)]
 pub trait Endpoint {
-    fn write_to_disk(self: Vc<Self>) -> Vc<WrittenEndpoint>;
+    fn output(self: Vc<Self>) -> Vc<EndpointOutput>;
+    // fn write_to_disk(self: Vc<Self>) -> Vc<EndpointOutputPaths>;
     fn server_changed(self: Vc<Self>) -> Vc<Completion>;
     fn client_changed(self: Vc<Self>) -> Vc<Completion>;
     /// The entry modules for the modules graph.
@@ -60,11 +62,34 @@ pub trait Endpoint {
 #[turbo_tasks::value(transparent)]
 pub struct Endpoints(Vec<ResolvedVc<Box<dyn Endpoint>>>);
 
+#[turbo_tasks::function]
+pub async fn endpoint_write_to_disk(
+    endpoint: ResolvedVc<Box<dyn Endpoint>>,
+) -> Result<Vc<EndpointOutputPaths>> {
+    let EndpointOutput {
+        output_assets,
+        output_paths,
+        project,
+    } = *endpoint.output().await?;
+
+    let _ = project
+        .emit_all_output_assets(output_assets_operation(output_assets))
+        .resolve()
+        .await?;
+
+    Ok(*output_paths)
+}
+
+#[turbo_tasks::function(operation)]
+fn output_assets_operation(output_assets: ResolvedVc<OutputAssets>) -> Vc<OutputAssets> {
+    *output_assets
+}
+
 #[turbo_tasks::function(operation)]
 pub fn endpoint_write_to_disk_operation(
     endpoint: OperationVc<Box<dyn Endpoint>>,
-) -> Vc<WrittenEndpoint> {
-    endpoint.connect().write_to_disk()
+) -> Vc<EndpointOutputPaths> {
+    endpoint_write_to_disk(endpoint.connect())
 }
 
 #[turbo_tasks::function(operation)]
@@ -76,7 +101,15 @@ pub fn endpoint_server_changed_operation(
 
 #[turbo_tasks::value(shared)]
 #[derive(Debug, Clone)]
-pub enum WrittenEndpoint {
+pub struct EndpointOutput {
+    pub output_assets: ResolvedVc<OutputAssets>,
+    pub output_paths: ResolvedVc<EndpointOutputPaths>,
+    pub project: ResolvedVc<Project>,
+}
+
+#[turbo_tasks::value(shared)]
+#[derive(Debug, Clone)]
+pub enum EndpointOutputPaths {
     NodeJs {
         /// Relative to the root_path
         server_entry_path: String,

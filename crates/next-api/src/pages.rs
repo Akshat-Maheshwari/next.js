@@ -77,7 +77,7 @@ use crate::{
         get_wasm_paths_from_root, paths_to_bindings, wasm_paths_to_bindings,
     },
     project::Project,
-    route::{Endpoint, Route, Routes, WrittenEndpoint},
+    route::{Endpoint, EndpointOutput, EndpointOutputPaths, Route, Routes},
     webpack_stats::generate_webpack_stats,
 };
 
@@ -1368,7 +1368,7 @@ pub struct InternalSsrChunkModule {
 #[turbo_tasks::value_impl]
 impl Endpoint for PageEndpoint {
     #[turbo_tasks::function]
-    async fn write_to_disk(self: ResolvedVc<Self>) -> Result<Vc<WrittenEndpoint>> {
+    async fn output(self: ResolvedVc<Self>) -> Result<Vc<EndpointOutput>> {
         let this = self.await?;
         let original_name = this.original_name.await?;
         let span = {
@@ -1392,12 +1392,12 @@ impl Endpoint for PageEndpoint {
             let output_assets_op = output_assets_operation(self);
             let output_assets = output_assets_op.connect();
 
-            let _ = this
-                .pages_project
-                .project()
-                .emit_all_output_assets(output_assets_op)
-                .resolve()
-                .await?;
+            // let _ = this
+            //     .pages_project
+            //     .project()
+            //     .emit_all_output_assets(output_assets_op)
+            //     .resolve()
+            //     .await?;
 
             let node_root = this.pages_project.project().node_root();
 
@@ -1425,7 +1425,7 @@ impl Endpoint for PageEndpoint {
 
             let node_root = &node_root.await?;
             let written_endpoint = match *output {
-                PageEndpointOutput::NodeJs { entry_chunk, .. } => WrittenEndpoint::NodeJs {
+                PageEndpointOutput::NodeJs { entry_chunk, .. } => EndpointOutputPaths::NodeJs {
                     server_entry_path: node_root
                         .get_path_to(&*entry_chunk.ident().path().await?)
                         .context("ssr chunk entry path must be inside the node root")?
@@ -1433,13 +1433,20 @@ impl Endpoint for PageEndpoint {
                     server_paths,
                     client_paths,
                 },
-                PageEndpointOutput::Edge { .. } => WrittenEndpoint::Edge {
+                PageEndpointOutput::Edge { .. } => EndpointOutputPaths::Edge {
                     server_paths,
                     client_paths,
                 },
             };
 
-            anyhow::Ok(written_endpoint.cell())
+            anyhow::Ok(
+                EndpointOutput {
+                    output_assets: output_assets.to_resolved().await?,
+                    output_paths: written_endpoint.resolved_cell(),
+                    project: this.pages_project.project().to_resolved().await?,
+                }
+                .cell(),
+            )
         }
         .instrument(span)
         .await
