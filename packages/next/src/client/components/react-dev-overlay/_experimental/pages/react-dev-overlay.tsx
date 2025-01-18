@@ -20,8 +20,13 @@ interface ReactDevOverlayProps {
 }
 
 export default function ReactDevOverlay({ children }: ReactDevOverlayProps) {
-  const { isMounted, state, onComponentError, hasRuntimeErrors } =
-    usePagesReactDevOverlay()
+  const {
+    isMounted,
+    state,
+    onComponentError,
+    hasRuntimeErrors,
+    hasBuildError,
+  } = usePagesReactDevOverlay()
 
   const { readyErrors } = useErrorHook({
     errors: state.errors,
@@ -49,7 +54,7 @@ export default function ReactDevOverlay({ children }: ReactDevOverlayProps) {
             setIsErrorOverlayOpen={setIsErrorOverlayOpen}
           />
 
-          {hasRuntimeErrors && (
+          {(hasRuntimeErrors || hasBuildError) && (
             <ErrorOverlay
               state={state}
               readyErrors={readyErrors}
