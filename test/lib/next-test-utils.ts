@@ -913,6 +913,35 @@ export async function openRedbox(browser: BrowserInterface): Promise<void> {
   await assertHasRedbox(browser)
 }
 
+export async function openDevToolsIndicatorPopover(
+  browser: BrowserInterface
+): Promise<void> {
+  try {
+    browser.waitForElementByCss('[data-nextjs-dev-tools-button]', 5000).click()
+  } catch (cause) {
+    const error = new Error('No DevTools Indicator to open.', { cause })
+    Error.captureStackTrace(error, openDevToolsIndicatorPopover)
+    throw error
+  }
+}
+
+export async function getRouteTypeFromDevToolsIndicator(
+  browser: BrowserInterface
+): Promise<'Static' | 'Dynamic'> {
+  await openDevToolsIndicatorPopover(browser)
+
+  return browser.eval(() => {
+    const portal = [].slice
+      .call(document.querySelectorAll('nextjs-portal'))
+      .find((p) => p.shadowRoot.querySelector('[data-nextjs-toast]'))
+    const root = portal.shadowRoot
+    const text = root.querySelector('[data-nextjs-route-type]').innerText
+    if (text === null) throw new Error('No route type found')
+    // Route\nStatic || Route\nDynamic
+    return text.split('\n').pop()
+  })
+}
+
 export function getRedboxHeader(browser: BrowserInterface) {
   return browser.eval(() => {
     const portal = [].slice

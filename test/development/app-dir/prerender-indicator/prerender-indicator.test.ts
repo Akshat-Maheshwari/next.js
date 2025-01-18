@@ -1,5 +1,5 @@
 import { nextTestSetup } from 'e2e-utils'
-import { retry } from 'next-test-utils'
+import { getRouteTypeFromDevToolsIndicator, retry } from 'next-test-utils'
 import { BrowserInterface } from 'next-webdriver'
 
 describe('prerender indicator', () => {
@@ -7,7 +7,14 @@ describe('prerender indicator', () => {
     files: __dirname,
   })
 
+  const isNewDevOverlay = process.env.__NEXT_EXPERIMENTAL_PPR === 'true'
+
   async function hasStaticIndicator(browser: BrowserInterface) {
+    if (isNewDevOverlay) {
+      const routeType = await getRouteTypeFromDevToolsIndicator(browser)
+      return routeType === 'Static'
+    }
+
     const staticIndicatorPresent = await browser.eval(() =>
       Boolean(
         document

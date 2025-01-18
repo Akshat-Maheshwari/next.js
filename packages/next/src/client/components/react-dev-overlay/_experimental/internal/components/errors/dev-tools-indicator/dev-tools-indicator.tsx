@@ -172,6 +172,7 @@ const DevToolsPopover = ({
                 onClick={hide}
               />
               <IndicatorRow
+                data-nextjs-route-type={isStaticRoute ? 'static' : 'dynamic'}
                 label="Route"
                 value={isStaticRoute ? 'Static' : 'Dynamic'}
               />
@@ -205,14 +206,15 @@ const IndicatorRow = ({
   label,
   value,
   onClick,
+  ...props
 }: {
   label: string
   value: React.ReactNode
   onClick?: () => void
-}) => {
+} & React.HTMLAttributes<HTMLDivElement | HTMLButtonElement>) => {
   const Wrapper = onClick ? 'button' : 'div'
   return (
-    <Wrapper data-nextjs-dev-tools-row onClick={onClick}>
+    <Wrapper data-nextjs-dev-tools-row onClick={onClick} {...props}>
       <span data-nextjs-dev-tools-row-label>{label}</span>
       <span data-nextjs-dev-tools-row-value>{value}</span>
     </Wrapper>
