@@ -884,11 +884,20 @@ export async function hasErrorToast(
   browser: BrowserInterface
 ): Promise<boolean> {
   return browser.eval(() => {
-    return Boolean(
-      Array.from(document.querySelectorAll('nextjs-portal')).find((p) =>
-        p.shadowRoot.querySelector('[data-nextjs-toast]')
+    try {
+      return Boolean(
+        Array.from(document.querySelectorAll('nextjs-portal')).find((p) =>
+          p.shadowRoot.querySelector(
+            // TODO(jiwon): data-nextjs-toast may not be an error indicator in new UI
+            process.env.__NEXT_EXPERIMENTAL_PPR
+              ? '[data-issues]'
+              : '[data-nextjs-toast]'
+          )
+        )
       )
-    )
+    } catch {
+      return false
+    }
   })
 }
 
@@ -899,9 +908,11 @@ export async function hasErrorToast(
 export async function openRedbox(browser: BrowserInterface): Promise<void> {
   try {
     browser
-      //TODO: data-nextjs-toast won't open red box in new UI.
       .waitForElementByCss(
-        '[data-issues-open], [data-next-mark], [data-nextjs-toast]',
+        //TODO(jiwon): data-nextjs-toast won't open red box in new UI.
+        process.env.__NEXT_EXPERIMENTAL_PPR
+          ? '[data-issues-open]'
+          : '[data-nextjs-toast]',
         5000
       )
       .click()
