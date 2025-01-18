@@ -32,7 +32,9 @@ export function RuntimeError({ error }: RuntimeErrorProps) {
         firstFirstPartyFrameIndex < 0
           ? []
           : filteredFrames.slice(0, firstFirstPartyFrameIndex),
-      trailingCallStackFrames: filteredFrames.slice(firstFirstPartyFrameIndex),
+      trailingCallStackFrames: filteredFrames.slice(
+        firstFirstPartyFrameIndex < 0 ? 0 : firstFirstPartyFrameIndex
+      ),
     }
   }, [error.frames, isIgnoredExpanded])
 
