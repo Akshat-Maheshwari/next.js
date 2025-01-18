@@ -41,8 +41,9 @@ const isOwnerStackEnabled = process.env.__NEXT_EXPERIMENTAL_PPR === 'true'
         `)
       } else {
         expect(stackFramesContent).toMatchInlineSnapshot(`
-          "at span ()
-          at Page (app/rsc/page.tsx (6:13))"
+         "at span (<anonymous> (0:0))
+         at eval (app/rsc/page.tsx (7:10))
+         at Page (app/rsc/page.tsx (6:13))"
         `)
         expect(source).toMatchInlineSnapshot(`
           "app/rsc/page.tsx (7:10) @ eval
