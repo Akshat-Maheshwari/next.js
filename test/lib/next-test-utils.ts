@@ -898,7 +898,13 @@ export async function hasErrorToast(
  */
 export async function openRedbox(browser: BrowserInterface): Promise<void> {
   try {
-    browser.waitForElementByCss('[data-issues-open]', 5000).click()
+    browser
+      //TODO: data-nextjs-toast won't open red box in new UI.
+      .waitForElementByCss(
+        '[data-issues-open], [data-next-mark], [data-nextjs-toast]',
+        5000
+      )
+      .click()
   } catch (cause) {
     const error = new Error('No Redbox to open.', { cause })
     Error.captureStackTrace(error, openRedbox)
